@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEasy</title>
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.1.3/axios.min.js" defer></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
+</head>
+<body>
+<!-- 创建一个顶部导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- 添加品牌或标志 -->
+    <a class="navbar-brand" href="/">
+        ShopEasy
+    </a>
+    <!-- 添加切换按钮 -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- 添加折叠容器 -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- 添加导航链接 -->
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/category">分类</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart">购物车</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/profile">我的</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/chat">聊天</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- 创建一个个人中心页面 -->
+<div class="container" x-data="profile()" x-init="load()">
+    <!-- 添加一个标题 -->
+    <h2 class="text-center">我的个人中心</h2>
+    <!-- 添加一个操作栏 -->
+    <div class="row"> <!-- 将 row 元素设置为网格容器 -->
+        <div class="col"> <!-- 将 col 元素设置为网格项，自动分配列数 -->
+            <!-- 添加一个按钮，用于用户注册 -->
+            <button class="btn btn-primary" @click="register()">用户注册</button> <!-- 去掉 btn-block 类，不占满宽度 -->
+        </div>
+        <div class="col">
+            <!-- 添加一个按钮，用于用户登录 -->
+            <button class="btn btn-primary" @click="login()">用户登录</button>
+        </div>
+        <div class="col">
+            <!-- 添加一个按钮，用于编辑信息 -->
+            <button class="btn btn-primary" @click="edit(user)">编辑信息</button>
+        </div>
+        <div class="col">
+            <!-- 添加一个按钮，用于退出登录 -->
+            <button class="btn btn-primary" @click="logout()">退出登录</button>
+        </div>
+    </div>
+    <p></p>
+    <!-- 添加一个个人信息栏 -->
+    <div class="row">
+        <div class="col-md-4">
+            <!-- 添加一个图片，用于展示用户的头像 -->
+            <img src="user.avatar" class="img-fluid rounded-circle">
+        </div>
+        <div class="col-md-8">
+            <!-- 添加一个表格，用于展示用户的基本信息 -->
+            <table class="table table-bordered table-hover">
+                <!-- 添加表头 -->
+                <thead>
+                <tr>
+                    <th>属性</th>
+                    <th>值</th>
+                </tr>
+                </thead>
+                <!-- 添加表体 -->
+                <tbody>
+                <!-- 遍历用户的基本信息 -->
+                <template x-for="(value, key) in user">
+                    <tr>
+                        <td x-text="key"></td>
+                        <td x-text="value"></td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div x-show="register_modal">
+        <div class="modal" style="display: block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">用户注册</h4>
+                        <button type="button" class="close" @click="register_modal=false">&times;</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label for="username">用户名：</label>
+                                <input id = "username" name="username" placeholder="请输入用户名" class="form-control" type="text"
+                                       x-model="username">
+                                <label for="password">密码：</label>
+                                <input id = "password" name="password" placeholder="请输入密码" class="form-control" type="text"
+                                       x-model="password">
+                                <label for="password2">确认密码：</label>
+                                <input id = "password2" name="password2" placeholder="请再次输入密码" class="form-control" type="text"
+                                       x-model="password2">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" id="btnSave" class="btn btn-primary" @click="submitRegister()">注册</button>
+                        <button type="button" class="btn btn-secondary" @click="register_modal=false">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 登录模态框 -->
+    <div x-show="login_modal">
+        <div class="modal" style="display: block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">用户登录</h4>
+                        <button type="button" class="close" @click="login_modal=false">×</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label for="username">用户名：</label>
+                                <input id = "loginusername" name="username" placeholder="请输入用户名" class="form-control" type="text"
+                                       x-model="username">
+                                <label for="password">密码：</label>
+                                <input id = "loginpassword" name="password" placeholder="请输入密码" class="form-control" type="text"
+                                       x-model="password">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" id="btnLogin" class="btn btn-primary" @click="submitLogin()">登录</button>
+                        <button type="button" class="btn btn-secondary" @click="login_modal=false">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑模态框 -->
+    <div x-show="edit_modal">
+        <div class="modal" style="display: block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">编辑信息</h4>
+                        <button type="button" class="close" @click="edit_modal=false">×</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label for="password">密码：</label>
+                                <input id = "editPassword" name="password" placeholder="请输入密码" class="form-control" type="text"
+                                       x-model="password">
+                                <label for="editNumber">电话：</label>
+                                <input id = "editNumber" name="number" placeholder="请输入电话号码" class="form-control" type="text"
+                                       x-model="number">
+                                <label for="editEmail">邮箱：</label>
+                                <input id = "editEmail" name="email" placeholder="请输入邮箱" class="form-control" type="text"
+                                       x-model="email">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" id="btnEdit" class="btn btn-primary" @click="save()">保存</button>
+                        <button type="button" class="btn btn-secondary" @click="edit_modal=false">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>
+<!-- 添加一个脚本，用于定义个人中心的数据和逻辑 -->
+<script>
+    function profile() {
+        return {
+            register_modal: false,
+            login_modal: false,
+            edit_modal: false,
+            user: [],
+            id: '',
+            username: '',
+            password: '',
+            password2: '',
+            number: '',
+            email: '',
+            avatar: '',
+            // 定义一个方法，用于用户注册
+            register() {
+                let self = this;
+                self.register_modal = true
+                self.username = ''
+                self.password = ''
+                self.password2 = ''
+                // alert("用户注册");
+            },
+            // 定义一个方法，提交注册
+            submitRegister() {
+                let self = this;
+                axios.post('/profile/register', {
+                    username: self.username,
+                    password: self.password,
+                    number: '',
+                    email: '',
+                    avatar: ''
+                })
+                    .then(function (res) {
+                        // self.load();
+                        self.register_modal = false;
+                        alert(res.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            // 加载登录用户数据
+            load() {
+                let self = this;
+                axios.get('/profile/getProfile')
+                    .then(function (res) {
+                    self.user = res.data;
+                    console.log("加载用户："+res);
+                })
+                    .catch(function (error) {
+                    console.log(error);
+                })
+
+            },
+            // 定义一个方法，用于用户登录
+            login() {
+                let self = this;
+                self.login_modal = true
+                self.username = ''
+                self.password = ''
+                self.password2 = ''
+                // alert("用户登录");
+            },
+            submitLogin() {
+                let self = this;
+                axios.post('/profile/login', {
+                    username: self.username,
+                    password: self.password,
+                    number: '',
+                    email: '',
+                    avatar: ''
+                })
+                    .then(function (res) {
+                        self.load();
+                        self.login_modal = false;
+                        alert(res.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            // 定义一个方法，用于退出登录
+            logout() {
+                let self = this;
+                axios.get('/profile/logout')
+                    .then(function (res) {
+                        self.load();
+                        // self.user = res.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                // alert("退出登录");
+            },
+            // 定义一个方法，用于编辑个人信息
+            edit(user) {
+                let self = this;
+                self.edit_modal = true;
+                self.id = user.id;
+                self.password = user.password;
+                self.number = user.number;
+                self.email = user.email;
+                // alert("编辑成功");
+            },
+            // 定义一个方法，用于用户保存数据
+            save() {
+                let self = this;
+                axios.put('/profile/update/' + self.id, {
+                    username: self.username,
+                    password: self.password,
+                    number: self.number,
+                    email: self.email,
+                    avatar: self.avatar
+                })
+                    .then(function (res) {
+                        self.edit_modal = false;
+                        self.load();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                alert("操作成功");
+            }
+        }
+    }
+</script>
+</body>
+</html>
