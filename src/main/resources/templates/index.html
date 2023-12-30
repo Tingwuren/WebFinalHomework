@@ -81,9 +81,7 @@
             <tr>
                 <td x-text="index+1"></td>
                 <td>
-                    <div x-data="{ imageUrl: 'images/' + product.image + '.jpg' }">
-                        <img :src="imageUrl" height="100" width="100">
-                    </div>
+                    <img :src="product.imageUrl" height="100" width="100">
                 </td>
                 <td x-text="product.name"></td>
                 <td x-text="product.type"></td>
@@ -153,6 +151,11 @@
                 axios.get('/index/getIndex')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -164,6 +167,11 @@
                 axios.get('/index/' + self.query)
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
