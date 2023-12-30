@@ -250,6 +250,10 @@
             // 定义一个方法，提交注册
             submitRegister() {
                 let self = this;
+                if (self.password != self.password2) {
+                    alert("密码不一致")
+                    return
+                }
                 axios.post('/profile/register', {
                     username: self.username,
                     password: self.password,
@@ -340,23 +344,44 @@
             // 定义一个方法，用于用户保存数据
             save() {
                 let self = this;
-                axios.put('/profile/update/' + self.id, {
-                    username: self.username,
-                    password: self.password,
-                    number: self.number,
-                    email: self.email,
-                    avatar: self.avatar
-                })
-                    .then(function (res) {
-                        self.edit_modal = false;
-                        self.load();
+                if (validateInput(self.number, self.email)) {
+                    axios.put('/profile/update/' + self.id, {
+                        username: self.username,
+                        password: self.password,
+                        number: self.number,
+                        email: self.email,
+                        avatar: self.avatar
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                    })
-                alert("操作成功");
+                        .then(function (res) {
+                            self.edit_modal = false;
+                            self.load();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                    alert("操作成功");
+                }
             }
         }
+    }
+
+    function validateInput(number, email) {
+        var isValid = true;
+
+        var regex = /^\d{11}$/;
+        if (regex.test(number)) {
+        } else {
+            isValid = false;
+            alert("手机号需要11位数字");
+        }
+
+        if (email.endsWith("@mail.com")) {
+        } else {
+            isValid = false;
+            alert("邮箱需要以@mail.com结尾");
+        }
+
+        return isValid;
     }
 </script>
 </body>

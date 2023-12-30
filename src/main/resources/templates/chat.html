@@ -48,6 +48,184 @@
         </ul>
     </div>
 </nav>
-<p>this is the chat page</p>
+<div class="container" x-data="chat()" x-init="load()">
+
+    <style>
+        .btn:not(:last-child) {
+            margin-right: 10px;
+        }
+    </style>
+    <button class="btn btn-primary float-right" @click="add()">写消息</button>
+    <button class="btn btn-primary float-right" @click="load()">刷新</button>
+
+    <h2>接收消息列表</h2>
+    <table id="messageTable" class="table">
+        <thead>
+        <tr>
+            <th>发送者</th>
+            <th>接收者</th>
+            <th>消息内容</th>
+            <th>消息状态</th>
+            <th>标记</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template x-for="(message, index) in receiveMessages">
+            <tr>
+                <td x-text="message.fromUsername"></td>
+                <td x-text="message.toUsername"></td>
+                <td x-text="message.content"></td>
+                <td x-text="message.state"></td>
+                <td>
+                    <button class="btn btn-xs btn-success"
+                            @click="read(message)">已读
+                    </button>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+    <h2>发送消息列表</h2>
+    <table id="sendMessageTable" class="table">
+        <thead>
+        <tr>
+            <th>发送者</th>
+            <th>接收者</th>
+            <th>消息内容</th>
+            <th>消息状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template x-for="(message, index) in sendMessages">
+            <tr>
+                <td x-text="message.fromUsername"></td>
+                <td x-text="message.toUsername"></td>
+                <td x-text="message.content"></td>
+                <td x-text="message.state"></td>
+                <td>
+                    <button class="btn btn-xs btn-danger"
+                            @click="remove(message)">删除
+                    </button>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+
+    <!-- 模态框 -->
+    <div x-show="show_modal">
+        <div class="modal" style="display: block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">编辑消息</h4>
+                        <button type="button" class="close" @click="show_modal=false">&times;</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label for="toUsername">用户名：</label>
+                                <input id = "toUsername" name="toUsername" placeholder="请输入接收者用户名" class="form-control" type="text"
+                                       x-model="toUsername">
+                                <label for="content">消息内容：</label>
+                                <input id = "content" name="content" placeholder="请输入密码" class="form-control" type="text"
+                                       x-model="content">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" id="btnSend" class="btn btn-primary" @click="send()">发送</button>
+                        <button type="button" class="btn btn-secondary" @click="show_modal=false">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function chat() {
+        return {
+            receiveMessages: [],
+            sendMessages: [],
+            show_modal: false,
+            id: '',
+            fromUsername: '',
+            toUsername: '',
+            content: '',
+            state: '',
+            load() {
+                let self = this;
+                axios.get('/chat/getReceiveMessage')
+                    .then(function (res) {
+                        self.receiveMessages = res.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                axios.get('/chat/getSendMessage')
+                    .then(function (res) {
+                        self.sendMessages = res.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            add() {
+                let self = this;
+                self.show_modal = true
+                self.id = ''
+                self.fromUsername = ''
+                self.toUsername = ''
+                self.content = ''
+            },
+            send() {
+                let self = this;
+                axios.post('/chat/', {
+                    fromUsername: self.fromUsername,
+                    toUsername: self.toUsername,
+                    content: self.content
+                })
+                    .then(function (res) {
+                        self.load();
+                        self.show_modal = false;
+                        alert(res.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            read(message) {
+                let self = this;
+                axios.put('/chat/' + message.id, {
+                    fromUsername: message.fromUsername,
+                    toUsername: message.toUsername,
+                    content: message.content,
+                    state: "已读"
+                })
+                    .then(function (res) {
+                        self.load();
+                        self.show_modal = false;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            remove(message) {
+                let self = this;
+                axios.delete('/chat/' + message.id)
+                    .then(function (res) {
+                        self.load();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+        }
+    }
+</script>
 </body>
 </html>

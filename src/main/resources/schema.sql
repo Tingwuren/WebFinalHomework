@@ -28,3 +28,12 @@ CREATE TABLE `cart`(
     `username` varchar(255) DEFAULT NULL, -- 用户名
     PRIMARY KEY (`id`) -- 主键约束
 );
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE `message` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT, -- 消息编号，整数类型，自增长，主键
+    `from_username` varchar(255) DEFAULT NULL, -- 发送者用户名
+    `to_username` varchar(255) DEFAULT NULL, -- 接收者用户名
+    `content` varchar(255) DEFAULT NULL, -- 消息详情
+    `state` varchar(255) DEFAULT NULL, -- 消息状态
+    PRIMARY KEY (`id`) -- 主键约束
+)

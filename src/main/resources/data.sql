@@ -1,5 +1,7 @@
-INSERT INTO `user` VALUES (1, 'admin','123456', '', '','/admin.jpg');
-
+INSERT INTO `user` VALUES (0, 'admin','123456', '', '','/admin.jpg');
+INSERT INTO `user` VALUES (1, 'alice','123456', '', '','/alice.jpg');
+INSERT INTO `message` VALUES (0, 'alice','admin', '你好', '未读');
+INSERT INTO `message` VALUES (1, 'admin','alice', 'hello', '未读');
 -- 插入第一个商品
 INSERT INTO Product (name, price, type, image) VALUES ('小米14', 5000, '数码', 'image_1');
 -- 插入第二个商品
