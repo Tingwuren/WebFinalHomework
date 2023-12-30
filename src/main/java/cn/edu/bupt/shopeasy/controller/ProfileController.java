@@ -22,7 +22,7 @@ public class ProfileController {
     @Resource
     UserMapper userMapper;
     @PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
-    String register(@RequestBody User user, Model model) {
+    String register(@RequestBody User user) {
         String username = user.getUsername();
         String password = user.getPassword();
         //打印用户信息
@@ -39,8 +39,6 @@ public class ProfileController {
         } else {
             //用户名不存在，执行插入操作
             userMapper.insert(user);
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("password", user.getPassword());
             return "注册成功";
         }
     }
@@ -68,11 +66,12 @@ public class ProfileController {
     User load(HttpSession session) {
         System.out.println("加载用户信息");
         User user = (User)session.getAttribute("now_user");
-        System.out.println("当前登录用户："+ user);
+
 
         if(user != null) {
             System.out.println("用户id："+ user.getId());
             User loadUser = userMapper.selectById(user.getId());
+            System.out.println("当前登录用户："+ loadUser);
             return loadUser;
         }
         return null;

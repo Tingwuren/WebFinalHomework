@@ -76,7 +76,7 @@
     <div class="row">
         <div class="col-md-4">
             <!-- 添加一个图片，用于展示用户的头像 -->
-            <img src="user.avatar" class="img-fluid rounded-circle">
+            <img :src="avatar" class="img-fluid rounded-circle" height="100" width="100">
         </div>
         <div class="col-md-8">
             <!-- 添加一个表格，用于展示用户的基本信息 -->
@@ -90,17 +90,31 @@
                 </thead>
                 <!-- 添加表体 -->
                 <tbody>
-                <!-- 遍历用户的基本信息 -->
-                <template x-for="(value, key) in user">
-                    <tr>
-                        <td x-text="key"></td>
-                        <td x-text="value"></td>
-                    </tr>
-                </template>
+                <tr>
+
+                    <td>用户id</td>
+                    <td x-text="user.id"></td>
+                </tr>
+                <tr>
+                    <td>用户名</td>
+                    <td x-text="user.username"></td>
+                </tr>
+                <tr>
+                    <td>手机号</td>
+                    <td x-text="user.number"></td>
+                </tr>
+                <tr>
+                    <td>邮箱</td>
+                    <td x-text="user.email"></td>
+                </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    <form action="/profile/upload/" method="post" enctype="multipart/form-data">
+        <input name="file" type="file">
+        <button type="submit">上传头像</button>
+    </form>
 
     <!-- 注册模态框 -->
     <div x-show="register_modal">
@@ -258,7 +272,7 @@
                 axios.get('/profile/getProfile')
                     .then(function (res) {
                     self.user = res.data;
-                    console.log("加载用户："+res);
+                    self.avatar = res.data.avatar;
                 })
                     .catch(function (error) {
                     console.log(error);
@@ -268,6 +282,10 @@
             // 定义一个方法，用于用户登录
             login() {
                 let self = this;
+                if(self.user) {
+                    alert("已登录！");
+                    return;
+                }
                 self.login_modal = true
                 self.username = ''
                 self.password = ''
@@ -308,6 +326,10 @@
             // 定义一个方法，用于编辑个人信息
             edit(user) {
                 let self = this;
+                if(!self.user) {
+                    alert("请先登录！");
+                    return;
+                }
                 self.edit_modal = true;
                 self.id = user.id;
                 self.password = user.password;

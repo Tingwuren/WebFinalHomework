@@ -1,4 +1,4 @@
-INSERT INTO `user` VALUES (1, 'admin','123456', '', '','');
+INSERT INTO `user` VALUES (1, 'admin','123456', '', '','/admin.jpg');
 
 -- 插入第一个商品
 INSERT INTO Product (name, price, type, image) VALUES ('小米14', 5000, '数码', 'image_1');

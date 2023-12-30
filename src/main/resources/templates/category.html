@@ -74,9 +74,7 @@
             <tr>
                 <td x-text="index+1"></td>
                 <td>
-                    <div x-data="{ imageUrl: 'images/' + product.image + '.jpg' }">
-                        <img :src="imageUrl" height="100" width="100">
-                    </div>
+                    <img :src="product.imageUrl" height="100" width="100">
                 </td>
                 <td x-text="product.name"></td>
                 <td x-text="product.type"></td>
@@ -120,7 +118,7 @@
                     </div>
                     <!-- 模态框底部 -->
                     <div class="modal-footer">
-                        <button type="button" id="btnAdd" class="btn btn-primary" @click="add()">添加</button>
+                        <button type="button" id="btnAdd" class="btn btn-primary" @click="addToCart()">添加</button>
                         <button type="button" class="btn btn-secondary" @click="show_modal=false">关闭</button>
                     </div>
                 </div>
@@ -145,6 +143,11 @@
                 axios.get('/category/getAll')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -155,6 +158,11 @@
                 axios.get('/category/getAll')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -165,6 +173,11 @@
                 axios.get('/category/getDigital')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -175,6 +188,11 @@
                 axios.get('/category/getComputer')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -185,6 +203,11 @@
                 axios.get('/category/getHome')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -195,6 +218,11 @@
                 axios.get('/category/getClothing')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -205,6 +233,11 @@
                 axios.get('/category/getBeauty')
                     .then(function (res) {
                         self.products = res.data
+                        // 遍历products数组中的每一个product对象
+                        self.products.forEach(function (product) {
+                            // 为每个product对象增加一个imageUrl属性
+                            product.imageUrl = 'images/' + product.image + '.jpg';
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -219,6 +252,23 @@
                 self.name = product.name
                 self.type = product.type
                 self.price = product.price
+            },
+            addToCart() {
+                let self = this;
+                axios.post('/cart/', {
+                    name: self.name,
+                    image: self.image,
+                    type: self.type,
+                    price: self.price,
+                })
+                    .then(function (res) {
+                        self.load();
+                        self.show_modal = false;
+                        alert(res.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
             },
         }
     }

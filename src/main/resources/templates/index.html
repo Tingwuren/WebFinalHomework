@@ -127,7 +127,7 @@
                     </div>
                     <!-- 模态框底部 -->
                     <div class="modal-footer">
-                        <button type="button" id="btnAdd" class="btn btn-primary" @click="add()">添加</button>
+                        <button type="button" id="btnAdd" class="btn btn-primary" @click="addToCart()">添加</button>
                         <button type="button" class="btn btn-secondary" @click="show_modal=false">关闭</button>
                     </div>
                 </div>
@@ -139,6 +139,7 @@
     function index() {
         return {
             products: [],
+            user: [],
             query: '', // 存储搜索关键字
             show_modal: false,
             id: '',
@@ -177,6 +178,23 @@
                 self.name = product.name
                 self.type = product.type
                 self.price = product.price
+            },
+            addToCart() {
+                let self = this;
+                axios.post('/cart/', {
+                    name: self.name,
+                    image: self.image,
+                    type: self.type,
+                    price: self.price,
+                })
+                    .then(function (res) {
+                        self.load();
+                        self.show_modal = false;
+                        alert(res.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
             },
         }
     }
