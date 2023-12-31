@@ -98,43 +98,6 @@
         </template>
         </tbody>
     </table>
-
-    <!-- 模态框 -->
-    <div x-show="show_modal">
-        <div class="modal" style="display: block">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <!-- 模态框头部 -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">添加到购物车</h4>
-                        <button type="button" class="close" @click="show_modal=false">&times;</button>
-                    </div>
-                    <!-- 模态框主体 -->
-                    <div class="modal-body">
-                        <div class="form-body">
-                            <div class="form-group">
-                                <label>图片</label>
-                                <p><img :src="imageUrl" height="100" width="100"></p>
-                                <label>名字</label>
-                                <p x-text="name"></p>
-
-                                <label>种类</label>
-                                <p x-text="type"></p>
-
-                                <label>价格</label>
-                                <p x-text="price"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 模态框底部 -->
-                    <div class="modal-footer">
-                        <button type="button" id="btnAdd" class="btn btn-primary" @click="addToCart()">添加</button>
-                        <button type="button" class="btn btn-secondary" @click="show_modal=false">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 <script>
     function cart() {
@@ -158,44 +121,6 @@
                             // 为每个cart对象增加一个imageUrl属性
                             cart.totalPrice = cart.price * cart.count;
                         });
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    })
-            },
-            search(query) {
-                let self = this;
-                self.query= query;
-                axios.get('/index/' + self.query)
-                    .then(function (res) {
-                        self.products = res.data
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    })
-            },
-            add(product) {
-                let self = this;
-                self.show_modal = true
-                self.id = product.id
-                self.image = product.image
-                self.imageUrl = 'images/' + product.image + '.jpg'
-                self.name = product.name
-                self.type = product.type
-                self.price = product.price
-            },
-            addToCart() {
-                let self = this;
-                axios.post('/cart/', {
-                    name: self.name,
-                    image: self.image,
-                    type: self.type,
-                    price: self.price,
-                })
-                    .then(function (res) {
-                        self.load();
-                        self.show_modal = false;
-                        alert(res.data);
                     })
                     .catch(function (error) {
                         console.log(error);

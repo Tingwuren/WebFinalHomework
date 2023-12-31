@@ -293,7 +293,6 @@
                 self.login_modal = true
                 self.username = ''
                 self.password = ''
-                self.password2 = ''
                 // alert("用户登录");
             },
             submitLogin() {
@@ -336,6 +335,7 @@
                 }
                 self.edit_modal = true;
                 self.id = user.id;
+                self.username = user.username;
                 self.password = user.password;
                 self.number = user.number;
                 self.email = user.email;
